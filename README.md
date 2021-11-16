@@ -23,60 +23,104 @@ If a contact sent a new message in less than 2 hours interval, and there is no t
 
 ## Installation and Usage (Linux Ubuntu - Development)
 
-Create Mysql Database using docker:
-_Note_: change MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER and MYSQL_ROOT_PASSWORD.
+CRIAR BANCO DE DADOS MYSQL
 
+Instalação
 ```bash
-sudo docker run --name vysordesk-db -e MYSQL_ROOT_PASSWORD=dhvtnc0809vps -e MYSQL_DATABASE=whaticket -e MYSQL_USER=whaticket -e MYSQL_PASSWORD=dhvtnc0809vps --restart always -p 3306:3306 -d mariadb:latest --character-set-server=utf8mb4 --collation-server=utf8mb4_bin 
+sudo apt update
+sudo apt install mysql-server
+sudo mysql_secure_installation
 ```
 
-Install puppeteer dependencies:
+Configuração MySQL
+```bash
+sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+```
+
+```bash
+bin-address=0.0.0.0
+server-id=2
+auto-increment-increment=10
+auto-increment-offset=2
+```
+
+```bash
+sudo systemctl restart mysql 
+```
+
+Criação de usuários MySQL
+```bash
+mysql -u root -p [ENTER]
+
+CREATE USER 'vysor'@'%' IDENTIFIED BY 'dhvtnc0809vps';
+GRANT REPLICATION CLIENT, REPLICATION SLAVE ON *.* TO 'vysor'@'%';
+SHOW MASTER STATUS \G;
+```
+
+```bash
+CREATE USER 'whatdesk'@'%' IDENTIFIED WITH mysql_native_password BY 'dhvtnc0809vps';
+GRANT ALL PRIVILEGES ON *.* TO 'whatdesk'@'%' WITH GRANT OPTION;
+CREATE DATABASE whatdesk;
+
+FLUSH PRIVILEGES; 
+```
+
+INSTALAÇÃO DEPENDÊNCIAS:
 
 ```bash
 sudo apt-get install -y libxshmfence-dev libgbm-dev wget unzip fontconfig locales gconf-service libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils
 ```
 
-Clone this repo
-
-HTTPS
 ```bash
-git clone https://github.com/aluizio-jr/vysor-desk.git
+sudo apt install nodejs
+sudo apt install npm
 ```
 
-SSH
+CLONAR REPOSITÓRIO
+
+BACKEND
 ```bash
-git clone git@github.com:aluizio-jr/vysor-desk.git
+git clone https://github.com/aluizio-jr/whatdesk-backend
 ```
-Download ssh key
+
+FRONTEND
+```bash
+git clone https://github.com/aluizio-jr/whatdesk-frontend
+```
+
+Login GIT
+```bash
+aluizio.fg@gmail.com
+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
+```
+
+Chave SSH Git
 https://1drv.ms/u/s!AnQ28Z-KIqKug_9Xw7yb8M2MF6VFwQ?e=iAIyF8
 
-Go to backend folder and create .env file:
+BACKEND .ENV:
 
 ```bash
-cp .env.example .env
-nano .env
-```
+sudo nano .env
 
-Fill `.env` file with environment variables:
-
-```bash
 NODE_ENV=DEVELOPMENT      #it helps on debugging
-BACKEND_URL=http://localhost
-FRONTEND_URL=https://localhost:3000
+BACKEND_URL=http://localhost    #ip/dns cliente
+FRONTEND_URL=https://localhost:3000   #ip/dns cliente
 PROXY_PORT=8080
 PORT=8080
 
-DB_HOST=                  #DB host IP, usually localhost
-DB_DIALECT=
-DB_USER=
-DB_PASS=
-DB_NAME=
+DB_HOST=localhost
+DB_DIALECT=mysql
+DB_USER=whatdesk
+DB_PASS=dhvtnc0809vps
+DB_NAME=whatdesk
 
 JWT_SECRET=3123123213123
 JWT_REFRESH_SECRET=75756756756
 ```
 
-Install backend dependencies, build app, run migrations and seeds:
+
+
+BACKEND INSTALL / MIIGRATIONS / SEEDS:
 
 ```bash
 npm install
@@ -85,7 +129,7 @@ npx sequelize db:migrate
 npx sequelize db:seed:all
 ```
 
-Start backend:
+BACKEND START:
 
 ```bash
 npm start
