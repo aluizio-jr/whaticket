@@ -91,7 +91,7 @@ git clone https://github.com/aluizio-jr/whatdesk-frontend
 Login GIT
 ```bash
 aluizio.fg@gmail.com
-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
+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
 ```
 
 Chave SSH Git
