@@ -65,6 +65,11 @@ CREATE DATABASE whatdesk;
 FLUSH PRIVILEGES; 
 ```
 
+DOCKER REDIRECIONAMENTO
+```
+export DOCKER_HOST_IP=$(route -n | awk '/UG[ \t]/{print $2}')
+```
+
 INSTALAÇÃO DEPENDÊNCIAS:
 
 ```bash
