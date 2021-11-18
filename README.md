@@ -65,7 +65,20 @@ CREATE DATABASE whatdesk;
 FLUSH PRIVILEGES; 
 ```
 
-DOCKER REDIRECIONAMENTO
+BANCO DE DADOS VIA DOCKER 
+```bash
+sudo apt update
+sudo apt install net-tools
+sudo apt install  curl apt-transport-https ca-certificates software-properties-common
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt update
+sudo apt install docker-ce
+
+sudo docker run --name deskzap-db -e MYSQL_ROOT_PASSWORD=dhvtnc0809vps -e MYSQL_DATABASE=deskzap -e MYSQL_USER=deskzap -e MYSQL_PASSWORD=dhvtnc0809vps --restart always -p 3306:3306 -d mariadb:latest --character-set-server=utf8mb4 --collation-server=utf8mb4_bin
+```
+
+REDIRECIONAMENTO DOCKER
 ```
 export DOCKER_HOST_IP=$(route -n | awk '/UG[ \t]/{print $2}')
 ```
@@ -99,9 +112,6 @@ aluizio.fg@gmail.com
 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
 ```
 
-Chave SSH Git
-https://1drv.ms/u/s!AnQ28Z-KIqKug_9Xw7yb8M2MF6VFwQ?e=iAIyF8
-
 BACKEND .ENV:
 
 ```bash
@@ -128,6 +138,14 @@ JWT_REFRESH_SECRET=75756756756
 BACKEND INSTALL / MIIGRATIONS / SEEDS:
 
 ```bash
+docker exec -it deskzap-db mysql -uroot -p
+
+CREATE USER 'deskzap'@'172.17.0.1' IDENTIFIED BY 'dhvtnc0809vps';
+GRANT ALL PRIVILEGES ON *.* TO 'deskzap'@'172.17.0.1' WITH GRANT OPTION;
+FLUSH PRIVILEGES; 
+```
+
+```bash
 npm install
 npm run build
 npx sequelize db:migrate
@@ -150,6 +168,8 @@ REACT_APP_BACKEND_URL = http://localhost:8080/ # Your previous configured backen
 Start frontend app:
 
 ```bash
+npm install
+npm run build
 npm start
 ```
 
